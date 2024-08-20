@@ -2,9 +2,9 @@ from typing import Any
 from unittest import TestCase
 from unittest.mock import Mock
 
-from src.movement import IMovable, MovableObjectAdaptor, Turn, TurnableObjectAdaptor, Vector, IUserObject, Move, \
-    ITurnable
+from src.movement import IMovable, MovableObjectAdaptor, Vector, IUserObject, Move
 
+from src.turn import Turn, TurnableObjectAdaptor, ITurnable
 
 class MockUserObject(IUserObject):
 
