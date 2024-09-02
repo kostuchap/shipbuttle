@@ -10,7 +10,7 @@ class MoveExceptions:
         raise NotImplementedError
 
 
-class MoveExceptionsLog:
+class ExceptionLog:
 
     def __init__(self, cmd, e):
         self.cmd = cmd
@@ -20,14 +20,14 @@ class MoveExceptionsLog:
         logging.log(logging.ERROR, f"Все сломалось. {type(self.cmd)}" f"{type(self.e)}")
 
 
-class MoveExceptionsLogQueue:
+class ExceptionLogQueue:
 
     def __init__(self, cmd, e):
         self.cmd = cmd
         self.e = e
 
     def execute(self):
-        ExceptionGameQueue(MoveExceptionsLog(self.cmd, self.e)).execute()
+        ExceptionGameQueue(ExceptionLog(self.cmd, self.e)).execute()
 
 
 class ExceptionGameQueue:

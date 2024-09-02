@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 from src.exception_handler import ExceptionHandler
-from src.game_exceptions import MoveExceptions, MoveExceptionsLog, MoveExceptionsLogQueue, \
+from src.game_exceptions import MoveExceptions, ExceptionLog, ExceptionLogQueue, \
     RetryCmdNow, RetryCmdNowQueue
 from src.game_loop import GameLoop, game_loop
 from src.movement import IMovable, MovableObjectAdaptor, Vector, IUserObject, Move
@@ -77,7 +77,7 @@ class ExceptionTestCase(TestCase):
     def test_exception_to_log(self):
         # Реализовать Команду, которая записывает информацию о выброшенном исключении в лог.
         exception = ExceptionHandler()
-        exception.register_handler(Move, AttributeError, MoveExceptionsLog)
+        exception.register_handler(Move, AttributeError, ExceptionLog)
         game = GameLoop(exception)
 
         mock_movable = Mock(spec_set=IMovable)
@@ -90,7 +90,7 @@ class ExceptionTestCase(TestCase):
     def test_exception_queue_log(self):
         # Реализовать обработчик исключения, который ставит Команду, пишущую в лог в очередь Команд.
         game_loop.exception.reset_handler()
-        game_loop.exception.register_handler(Move, AttributeError, MoveExceptionsLogQueue)
+        game_loop.exception.register_handler(Move, AttributeError, ExceptionLogQueue)
 
         mock_movable = Mock(spec_set=IMovable)
         mock_movable.get_position.side_effect = NotImplementedError()
@@ -128,11 +128,10 @@ class ExceptionTestCase(TestCase):
         # при первом выбросе исключения повторить команду, при повторном выбросе исключения записать информацию в лог.
         game_loop.exception.reset_handler()
         game_loop.exception.register_handler(MockCmd, Exception, RetryCmdNowQueue)
-        game_loop.exception.register_handler(RetryCmdNow, Exception, MoveExceptionsLog)
+        game_loop.exception.register_handler(RetryCmdNow, Exception, ExceptionLog)
 
         mock = MockCmd()
         game_loop.put_cmd(mock)
-
 
         game_loop.run()
 
