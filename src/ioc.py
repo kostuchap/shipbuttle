@@ -18,6 +18,13 @@ class MacroCmdFactory(AbsFactory):
     def create_service(self):
         return MacroCommand(self._cmds)
 
+class IoCRegistry(AbsFactory):
+
+    def __init__(self, ):
+        pass
+
+    def create_service(self):
+        return lambda x:print( x)
 
 class IoC(abc.ABC):
 
@@ -27,18 +34,24 @@ class IoC(abc.ABC):
 
 class IoCResolver(IoC):
 
+
+
     def __init__(self):
         self._strategy = defaultdict(ICommand)
+        self._strategy['register'] = self.register_factory
 
     def resolve_cmd(self, key, *args, **kwargs):
         # self._strategy[key].create_service(*args, **kwargs)
-        return self._strategy[key](*args, **kwargs)
+        if self._strategy.get(key):
+            return self._strategy[key](*args, **kwargs)
+        else:
+            raise ValueError
 
     def resolve_factory(self, key, *args, **kwargs):
         if self._strategy.get(key):
             return self._strategy[key](*args, **kwargs).create_service()
         else:
-            self._strategy[key] = args[0]
+            raise ValueError
 
     def register_factory(self, key, factory):
         self._strategy[key] = factory
