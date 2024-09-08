@@ -4,7 +4,7 @@ from unittest import TestCase
 from src.command import MacroCommand
 from src.fiel import CheckFuel, BurnFuel
 from src.game_object import IUserObject
-from src.ioc import IoCResolver, MacroCmdFactory
+from src.ioc import IoCResolver
 
 
 class MockUserObject(IUserObject):
@@ -23,8 +23,8 @@ class IoCTest(TestCase):
 
     def test_ios(self):
         ioc = IoCResolver()
-        # ioc.register_factory('GameFactory', GameFactory)
-        ioc.register_factory('MacroCommand', MacroCommand)
+        ioc.resolve('register', 'MacroCommand', MacroCommand)
+
         # object_with_fuel = MockUserObject()
         # object_with_fuel.set_property("fuel_volume", 1)
         # object_with_fuel.set_property("fuel_velocity", 1)
@@ -42,29 +42,9 @@ class IoCTest(TestCase):
         check_fuel_cmd.execute()
         self.assertTrue(object_with_fuel.get_property("fuel_volume") == 0)
 
-    def test_ios_factory(self):
-        ioc = IoCResolver()
-        ioc.register_factory('MacroCmdFactory', MacroCmdFactory)
-        # object_with_fuel = MockUserObject()
-        # object_with_fuel.set_property("fuel_volume", 1)
-        # object_with_fuel.set_property("fuel_velocity", 1)
-        # check_fuel_cmd = CheckFuel(object_with_fuel)
-        # check_fuel_cmd.execute()
-        # burn_fuel_cmd = BurnFuel(object_with_fuel)
-        object_with_fuel = MockUserObject()
-        object_with_fuel.set_property("fuel_volume", 1)
-        object_with_fuel.set_property("fuel_velocity", 1)
-        macro_commands = [
-            CheckFuel(object_with_fuel),
-            BurnFuel(object_with_fuel),
-        ]
-        check_fuel_cmd = ioc.resolve_factory('MacroCmdFactory', macro_commands)
-        check_fuel_cmd.execute()
-        self.assertTrue(object_with_fuel.get_property("fuel_volume") == 0)
-
     def test_ios_factory_register_unregister(self):
         ioc = IoCResolver()
-        ioc.resolve_cmd('register', 'MacroCommand', MacroCommand)
+        ioc.resolve('register', 'MacroCommand', MacroCommand)
         # object_with_fuel = MockUserObject()
         # object_with_fuel.set_property("fuel_volume", 1)
         # object_with_fuel.set_property("fuel_velocity", 1)
@@ -78,8 +58,8 @@ class IoCTest(TestCase):
             CheckFuel(object_with_fuel),
             BurnFuel(object_with_fuel),
         ]
-        check_fuel_cmd = ioc.resolve_cmd('MacroCommand', macro_commands)
+        check_fuel_cmd = ioc.resolve('MacroCommand', macro_commands)
         check_fuel_cmd.execute()
         self.assertTrue(object_with_fuel.get_property("fuel_volume") == 0)
-        ioc.resolve_cmd('register', 'MacroCommand', None)
-        self.assertRaises(Exception, ioc.resolve_cmd, 'MacroCommand', macro_commands)
+        ioc.resolve('register', 'MacroCommand', None)
+        self.assertRaises(Exception, ioc.resolve, 'MacroCommand', macro_commands)
