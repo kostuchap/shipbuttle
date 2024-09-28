@@ -15,3 +15,12 @@ class MacroCommand(ICommand):
     def execute(self):
         for cmd in self._cmds:
             cmd.execute()
+
+
+class LambdaCommand(ICommand):
+
+    def __init__(self, lmbd):
+        self._lambda = lmbd
+
+    def execute(self):
+        self._lambda()
