@@ -23,5 +23,6 @@ class GameLoop:
             except Exception as e:
                 self.exception.handle(cmd, e)
 
+
 game_exception_handler = ExceptionHandler()
 game_loop = GameLoop(game_exception_handler)
